@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🌻 Sunflower Quiz</title>
+<style>
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: #fff8ed;
+  color: #655d57;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+.app {
+  max-width: 720px;
+  margin: auto;
+  padding: 18px;
+}
+h1 {
+  text-align: center;
+  font-size: 38px;
+  margin: 5px 0;
+}
+.subtitle {
+  text-align: center;
+  color: #9b8e83;
+  margin-bottom: 16px;
+}
+.card {
+  background: #fffdf8;
+  border: 3px solid #eadfd0;
+  border-radius: 28px;
+  padding: 16px;
+  box-shadow: 0 8px 0 #e8dbcc;
+}
+.stats {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.stat {
+  background: #fff0bd;
+  border: 2px solid #e1c978;
+  padding: 7px 12px;
+  border-radius: 18px;
+  font-weight: 700;
+  font-size: 14px;
+}
+.progress {
+  height: 12px;
+  background: #eee5db;
+  border-radius: 20px;
+  overflow: hidden;
+  margin: 12px 0;
+}
+.progress-bar {
+  width: 0%;
+  height: 100%;
+  background: #a8ce9d;
+  transition: .4s;
+}
+/* ---------------- FLOWER AREA ---------------- */
+.scene {
+  height: 290px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 24px;
+  border: 2px solid #cfe0d6;
+  background: linear-gradient(
+    #dff1f1 0%,
+    #dff1f1 62%,
+    #d5e7c5 62%,
+    #d5e7c5 100%
+  );
+}
+.sun {
+  position: absolute;
+  right: 20px;
+  top: 15px;
+  font-size: 44px;
+}
+.cloud {
+  position: absolute;
+  left: 25px;
+  top: 25px;
+  font-size: 42px;
+}
+.stem {
+  position: absolute;
+  width: 10px;
+  height: 185px;
+  left: 50%;
+  top: 82px;
+  transform: translateX(-50%) scaleY(.55);
+  transform-origin: top;
+  background: #719b70;
+  border-radius: 10px;
+  transition: .6s;
+}
+.leaf {
+  position: absolute;
+  width: 90px;
+  height: 38px;
+  background: #9eca98;
+  border: 3px solid #71936b;
+  border-radius: 100%;
+  transition: .6s;
+}
+.leaf-left {
+  left: calc(50% - 92px);
+  top: 155px;
+  transform: rotate(-25deg) scale(.6);
+}
+.leaf-right {
+  left: calc(50% + 5px);
+  top: 130px;
+  transform: rotate(25deg) scale(.6);
+}
+.flower {
+  position: absolute;
+  left: 50%;
+  top: 36px;
+  width: 65px;
+  height: 65px;
+  transform:
+    translateX(-50%)
+    scale(.3);
+  transform-origin: center 70px;
+  transition: .6s;
+}
+.petal {
+  position: absolute;
+  width: 52px;
+  height: 105px;
+  left: 6px;
+  top: -20px;
+  background: #f5d777;
+  border: 4px solid #c5a652;
+  border-radius: 55%;
+}
+.p1 { transform: rotate(0deg); }
+.p2 { transform: rotate(45deg); }
+.p3 { transform: rotate(90deg); }
+.p4 { transform: rotate(135deg); }
+.p5 { transform: rotate(180deg); }
+.p6 { transform: rotate(225deg); }
+.p7 { transform: rotate(270deg); }
+.p8 { transform: rotate(315deg); }
+.center {
+  position: absolute;
+  width: 65px;
+  height: 65px;
+  left: 0;
+  top: 0;
+  border-radius: 50%;
+  background: #916b52;
+  border: 4px solid #6d503f;
+}
+.face {
+  text-align: center;
+  color: #f9dec4;
+  font-size: 17px;
+  padding-top: 21px;
+}
+.plant-label {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #fffaf0dd;
+  padding: 7px 14px;
+  border-radius: 18px;
+  white-space: nowrap;
+  font-weight: 700;
+}
+/* ---------------- QUESTION ---------------- */
+.question-number {
+  color: #ad9176;
+  font-size: 14px;
+  font-weight: 700;
+  margin-top: 14px;
+}
+.question {
+  font-size: 23px;
+  line-height: 1.35;
+  font-weight: 800;
+  margin: 5px 0 13px;
+}
+.choices {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+button {
+  font: inherit;
+  color: #625b55;
+  background: #fff;
+  border: 2px solid #ded2c4;
+  border-radius: 17px;
+  padding: 13px 10px;
+  font-weight: 650;
+  cursor: pointer;
+  box-shadow: 0 4px 0 #e9dfd5;
+}
+button:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 #e9dfd5;
+}
+button:disabled {
+  cursor: default;
+}
+.correct {
+  background: #dff0d9 !important;
+  border-color: #9bc78e !important;
+}
+.wrong {
+  background: #f7dcdf !important;
+  border-color: #d8aeb6 !important;
+}
+.feedback {
+  min-height: 28px;
+  text-align: center;
+  margin: 10px 0;
+  font-weight: 800;
+}
+.actions {
+  text-align: center;
+}
+.water {
+  background: #d8eff2;
+  border-color: #9fcbd4;
+}
+.sun-button {
+  background: #ffefad;
+  border-color: #dfc568;
+  margin-left: 6px;
+}
+.hidden {
+  display: none !important;
+}
+/* ---------------- RESULT ---------------- */
+.result {
+  text-align: center;
+  padding: 30px 15px;
+}
+.result-emoji {
+  font-size: 90px;
+}
+.result h2 {
+  font-size: 38px;
+  margin: 5px;
+}
+.restart {
+  background: #f3d0d7;
+  border-color: #d8adb6;
+}
+@media(max-width:520px) {
+  .choices {
+    grid-template-columns: 1fr;
+  }
+  .question {
+    font-size: 21px;
+  }
+}
+</style>
+</head>
+<body>
+<div class="app">
+<h1>🌻 ปลูกทานตะวันของเรา</h1>
+<p class="subtitle">
+ตอบคำถามให้ถูก รดน้ำให้น้องโต และสะสมแสงแดด ✨
+</p>
+<!-- GAME -->
+<div id="game" class="card">
+  <div class="stats">
+    <div class="stat">🌱 ข้อ <span id="number">1</span>/10</div>
+    <div class="stat">⭐ <span id="score">0</span></div>
+    <div class="stat">💧 <span id="water">0</span></div>
+    <div class="stat">🔥 <span id="combo">0</span>/3</div>
+  </div>
+  <div class="progress">
+    <div class="progress-bar" id="progress"></div>
+  </div>
+  <!-- SUNFLOWER -->
+  <div class="scene">
+    <div class="cloud">☁️</div>
+    <div class="sun">☀️</div>
+    <div class="stem" id="stem"></div>
+    <div class="leaf leaf-left" id="leafLeft"></div>
+    <div class="leaf leaf-right" id="leafRight"></div>
+    <div class="flower" id="flower">
+      <div class="petal p1"></div>
+      <div class="petal p2"></div>
+      <div class="petal p3"></div>
+      <div class="petal p4"></div>
+      <div class="petal p5"></div>
+      <div class="petal p6"></div>
+      <div class="petal p7"></div>
+      <div class="petal p8"></div>
+      <div class="center">
+        <div class="face">•ᴗ•</div>
+      </div>
+    </div>
+    <div class="plant-label" id="plantLabel">
+      🌱 เมล็ดกำลังโต...
+    </div>
+  </div>
+  <!-- QUESTION -->
+  <div class="question-number">
+    คำถามที่ <span id="questionNumber">1</span>
+  </div>
+  <div class="question" id="question"></div>
+  <div class="choices" id="choices"></div>
+  <div class="feedback" id="feedback"></div>
+  <div class="actions">
+    <button
+      class="water"
+      id="waterButton"
+      disabled>
+      💧 รดน้ำให้น้อง
+    </button>
+    <button
+      class="sun-button hidden"
+      id="sunButton">
+      ☀️ ใช้แสงแดด
+    </button>
+  </div>
+</div>
+<!-- RESULT -->
+<div id="result" class="card result hidden">
+  <div class="result-emoji" id="resultEmoji">
+    🌻
+  </div>
+  <h2>ทานตะวันบานแล้ว!</h2>
+  <p id="resultText"></p>
+  <button
+    class="restart"
+    onclick="restartGame()">
+    🔄 เล่นอีกครั้ง
+  </button>
+</div>
+</div>
+<script>
+/* =========================
+   QUESTIONS
+========================= */
+const questions = [
+  {
+    question:
+      "โรงพยาบาลที่เค้าเกิด อยู่จังหวัดอะไร?",
+    choices: [
+      "กรุงเทพมหานคร",
+      "เชียงใหม่",
+      "ลำปาง",
+      "ชลบุรี"
+    ],
+    answer: "กรุงเทพมหานคร"
+  },
+  {
+    question:
+      "Disney Princess ที่เค้าชอบมากที่สุดคือใคร?",
+    choices: [
+      "Rapunzel",
+      "Ariel",
+      "Belle",
+      "Jasmine"
+    ],
+    answer: "Rapunzel"
+  },
+  {
+    question:
+      "เมนูโปรดของเค้าคืออะไร?",
+    choices: [
+      "ข้าวไข่ดาว",
+      "ผัดกะเพรา",
+      "ราเมง",
+      "ชาบู"
+    ],
+    answer: "ข้าวไข่ดาว"
+  },
+  {
+    question:
+      "ศิลปินที่เค้าชอบมากที่สุดคือใคร?",
+    choices: [
+      "July29",
+      "BUS",
+      "4EVE",
+      "PROXIE"
+    ],
+    answer: "July29"
+  },
+  {
+    question:
+      "ชื่อเล่นในวงการของเค้าคืออะไร?",
+    choices: [
+      "กสิ",
+      "กัส",
+      "สิธา",
+      "ธารา"
+    ],
+    answer: "กสิ"
+  },
+  {
+    question:
+      "เครื่องดื่มที่เค้าชอบที่สุดคืออะไร?",
+    choices: [
+      "ชาเขียวมะลิ",
+      "ชานมไข่มุก",
+      "โกโก้",
+      "อเมริกาโน่"
+    ],
+    answer: "ชาเขียวมะลิ"
+  },
+  {
+    question:
+      "เค้าเรียนคณะอะไร?",
+    choices: [
+      "มนุษยศาสตร์",
+      "นิเทศศาสตร์",
+      "บริหารธุรกิจ",
+      "วิทยาศาสตร์"
+    ],
+    answer: "มนุษยศาสตร์"
+  },
+  {
+    question:
+      "กระเป๋าเป้เค้าแบรนด์อะไร?",
+    choices: [
+      "CK",
+      "Coach",
+      "Dior",
+      "Longchamp"
+    ],
+    answer: "CK"
+  },
+  {
+    question:
+      "เค้าใส่ยางสีอะไร?",
+    choices: [
+      "น้ำเงิน",
+      "ชมพู",
+      "ม่วง",
+      "เขียว"
+    ],
+    answer: "น้ำเงิน"
+  },
+  {
+    question:
+      "แฟนเค้าชื่ออะไร?",
+    choices: [
+      "บีม วีรภัทร",
+      "นนท์ ธนนท์",
+      "เจมส์ จิรายุ",
+      "ภูวินทร์"
+    ],
+    answer: "บีม วีรภัทร"
+  }
+];
+/* =========================
+   GAME VARIABLES
+========================= */
+let currentQuestion = 0;
+let score = 0;
+let water = 0;
+let combo = 0;
+let sunlight = 0;
+let growth = 10;
+let canWater = false;
+let answered = false;
+/* =========================
+   ELEMENTS
+========================= */
+const numberElement =
+  document.getElementById("number");
+const questionNumberElement =
+  document.getElementById("questionNumber");
+const questionElement =
+  document.getElementById("question");
+const choicesElement =
+  document.getElementById("choices");
+const scoreElement =
+  document.getElementById("score");
+const waterElement =
+  document.getElementById("water");
+const comboElement =
+  document.getElementById("combo");
+const progressElement =
+  document.getElementById("progress");
+const feedbackElement =
+  document.getElementById("feedback");
+const waterButton =
+  document.getElementById("waterButton");
+const sunButton =
+  document.getElementById("sunButton");
+const flower =
+  document.getElementById("flower");
+const stem =
+  document.getElementById("stem");
+const leafLeft =
+  document.getElementById("leafLeft");
+const leafRight =
+  document.getElementById("leafRight");
+const plantLabel =
+  document.getElementById("plantLabel");
+/* =========================
+   LOAD QUESTION
+========================= */
+function loadQuestion() {
+  answered = false;
+  canWater = false;
+  const question =
+    questions[currentQuestion];
+  numberElement.textContent =
+    currentQuestion + 1;
+  questionNumberElement.textContent =
+    currentQuestion + 1;
+  questionElement.textContent =
+    question.question;
+  feedbackElement.textContent = "";
+  waterButton.disabled = true;
+  sunButton.classList.toggle(
+    "hidden",
+    sunlight <= 0
+  );
+  progressElement.style.width =
+    `${currentQuestion / questions.length * 100}%`;
+  choicesElement.innerHTML = "";
+  const shuffled =
+    [...question.choices]
+      .sort(() => Math.random() - 0.5);
+  shuffled.forEach(choice => {
+    const button =
+      document.createElement("button");
+    button.textContent = choice;
+    button.addEventListener(
+      "click",
+      () => answerQuestion(button, choice)
+    );
+    choicesElement.appendChild(button);
+  });
+  updateInterface();
+}
+/* =========================
+   ANSWER
+========================= */
+function answerQuestion(button, choice) {
+  if (answered) return;
+  answered = true;
+  const question =
+    questions[currentQuestion];
+  const buttons =
+    [...choicesElement.children];
+  buttons.forEach(
+    button => button.disabled = true
+  );
+  /* CORRECT */
+  if (choice === question.answer) {
+    button.classList.add("correct");
+    score += 10;
+    water++;
+    combo++;
+    growth =
+      Math.min(100, growth + 9);
+    canWater = true;
+    feedbackElement.textContent =
+      "✨ ถูกต้อง! ได้ 💧 น้ำ 1 ครั้ง";
+    /* 3 COMBO */
+    if (combo === 3) {
+      sunlight++;
+      combo = 0;
+      feedbackElement.textContent +=
+        " ☀️ ครบ 3 ข้อติด! ได้โบนัสแสงแดด!";
+    }
+  }
+  /* WRONG */
+  else {
+    button.classList.add("wrong");
+    combo = 0;
+    growth =
+      Math.max(0, growth - 12);
+    buttons.forEach(button => {
+      if (button.textContent === question.answer) {
+        button.classList.add("correct");
+      }
+    });
+    feedbackElement.textContent =
+      "🥀 ยังไม่ถูก น้องทานตะวันเหี่ยวลงนิดหนึ่ง";
+  }
+  updateInterface();
+  waterButton.disabled =
+    !canWater;
+  /*
+    ไปข้อถัดไปหลังจาก
+    แสดงผล 1.3 วินาที
+  */
+  setTimeout(() => {
+    if (currentQuestion < questions.length - 1) {
+      currentQuestion++;
+      loadQuestion();
+    }
+    else {
+      finishGame();
+    }
+  }, 1300);
+}
+/* =========================
+   WATER
+========================= */
+waterButton.addEventListener(
+  "click",
+  () => {
+    if (!canWater) return;
+    canWater = false;
+    water--;
+    growth =
+      Math.min(100, growth + 8);
+    waterButton.disabled = true;
+    feedbackElement.textContent =
+      "💦 รดน้ำแล้ว! น้องโตขึ้นอีกนิด 🌱";
+    updateInterface();
+  }
+);
+/* =========================
+   SUNLIGHT
+========================= */
+sunButton.addEventListener(
+  "click",
+  () => {
+    if (sunlight <= 0) return;
+    sunlight--;
+    growth =
+      Math.min(100, growth + 18);
+    feedbackElement.textContent =
+      "☀️ แสงแดดโบนัสทำให้น้องโตไวขึ้น!";
+    sunButton.classList.toggle(
+      "hidden",
+      sunlight <= 0
+    );
+    updateInterface();
+  }
+);
+/* =========================
+   UPDATE FLOWER
+========================= */
+function updatePlant() {
+  /*
+    growth 0-100
+    แปลงเป็นขนาดดอกไม้
+  */
+  const scale =
+    0.30 + growth / 100 * 0.70;
+  flower.style.transform =
+    `translateX(-50%)
+     scale(${scale})
+     rotate(${growth < 25 ? 10 : 0}deg)`;
+  stem.style.transform =
+    `translateX(-50%)
+     scaleY(${0.55 + growth / 100 * 0.5})`;
+  leafLeft.style.transform =
+    `rotate(-25deg)
+     scale(${0.6 + growth / 100 * 0.5})`;
+  leafRight.style.transform =
+    `rotate(25deg)
+     scale(${0.6 + growth / 100 * 0.5})`;
+  /* TEXT */
+  if (growth < 25) {
+    plantLabel.textContent =
+      "🥀 น้องกำลังเหี่ยว...";
+  }
+  else if (growth < 50) {
+    plantLabel.textContent =
+      "🌱 ขออีกนิดนะ!";
+  }
+  else if (growth < 75) {
+    plantLabel.textContent =
+      "🌿 โตขึ้นแล้ว!";
+  }
+  else {
+    plantLabel.textContent =
+      "🌻 ใกล้บานเต็มที่!";
+  }
+}
+/* =========================
+   INTERFACE
+========================= */
+function updateInterface() {
+  scoreElement.textContent =
+    score;
+  waterElement.textContent =
+    water;
+  comboElement.textContent =
+    combo;
+  updatePlant();
+}
+/* =========================
+   FINISH
+========================= */
+function finishGame() {
+  document
+    .getElementById("game")
+    .classList.add("hidden");
+  document
+    .getElementById("result")
+    .classList.remove("hidden");
+  const resultEmoji =
+    document.getElementById("resultEmoji");
+  const resultText =
+    document.getElementById("resultText");
+  if (growth >= 75) {
+    resultEmoji.textContent = "🌻";
+  }
+  else if (growth >= 45) {
+    resultEmoji.textContent = "🌼";
+  }
+  else {
+    resultEmoji.textContent = "🌱";
+  }
+  resultText.innerHTML = `
+    ตอบถูก <b>${score / 10}/10</b> ข้อ<br>
+    ⭐ คะแนน <b>${score}</b><br>
+    🌱 ทานตะวันโต <b>${growth}%</b><br>
+    💧 น้ำคงเหลือ ${water}<br>
+    ☀️ โบนัสแสงแดดคงเหลือ ${sunlight}
+  `;
+}
+/* =========================
+   RESTART
+========================= */
+function restartGame() {
+  currentQuestion = 0;
+  score = 0;
+  water = 0;
+  combo = 0;
+  sunlight = 0;
+  growth = 10;
+  canWater = false;
+  document
+    .getElementById("game")
+    .classList.remove("hidden");
+  document
+    .getElementById("result")
+    .classList.add("hidden");
+  loadQuestion();
+}
+/* =========================
+   START
+========================= */
+loadQuestion();
+</script>
+</body>
+</html>
